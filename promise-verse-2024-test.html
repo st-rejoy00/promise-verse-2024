@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promise Verse</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        input, button {
+            margin: 10px;
+            padding: 10px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Page 1 -->
+    <div id="page1">
+        <h1>Welcome!</h1>
+        <p>Enter your name to receive your promise verse for 2024:</p>
+        <input type="text" id="nameInput" placeholder="Enter your name">
+        <button onclick="generatePromise()">Submit</button>
+    </div>
+
+    <!-- Page 2 -->
+    <div id="page2" style="display: none;">
+        <h1>Dear <span id="userName"></span>,</h1>
+        <p>Your promise verse for the year 2024 is:</p>
+        <p><strong><span id="promiseVerse"></span></strong></p>
+        <button onclick="goBack()">Back</button>
+    </div>
+
+    <script>
+        // List of promise verses
+        const promiseVerses = [
+            "Jeremiah 29:11 - For I know the plans I have for you.",
+            "Isaiah 41:10 - Fear not, for I am with you.",
+            "Philippians 4:13 - I can do all things through Christ.",
+            "Psalm 23:1 - The Lord is my shepherd; I shall not want.",
+            "Matthew 5:14 - You are the light of the world."
+        ];
+
+        // Database to store names and associated promise verses
+        let nameDatabase = {};
+
+        // Optional: Load database from localStorage
+        if (localStorage.getItem('nameDatabase')) {
+            nameDatabase = JSON.parse(localStorage.getItem('nameDatabase'));
+        }
+
+        function generatePromise() {
+            const nameInput = document.getElementById('nameInput').value.trim();
+
+            if (nameInput) {
+                // Convert name to lowercase for case-insensitive matching
+                const nameKey = nameInput.toLowerCase();
+                let selectedVerse;
+
+                if (nameDatabase[nameKey]) {
+                    // Retrieve existing promise verse
+                    selectedVerse = nameDatabase[nameKey];
+                } else {
+                    // Assign a new promise verse
+                    const randomIndex = Math.floor(Math.random() * promiseVerses.length);
+                    selectedVerse = promiseVerses[randomIndex];
+                    nameDatabase[nameKey] = selectedVerse;
+
+                    // Optional: Save database to localStorage
+                    localStorage.setItem('nameDatabase', JSON.stringify(nameDatabase));
+                }
+
+                // Update Page 2 content
+                document.getElementById('userName').textContent = nameInput; // Preserve original casing
+                document.getElementById('promiseVerse').textContent = selectedVerse;
+
+                // Show Page 2 and hide Page 1
+                document.getElementById('page1').style.display = 'none';
+                document.getElementById('page2').style.display = 'block';
+            } else {
+                alert("Please enter your name.");
+            }
+        }
+
+        function goBack() {
+            // Show Page 1 and hide Page 2
+            document.getElementById('page1').style.display = 'block';
+            document.getElementById('page2').style.display = 'none';
+
+            // Clear input and results
+            document.getElementById('nameInput').value = '';
+            document.getElementById('userName').textContent = '';
+            document.getElementById('promiseVerse').textContent = '';
+        }
+    </script>
+</body>
+</html>
